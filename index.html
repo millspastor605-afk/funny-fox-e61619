@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>Jommimy's study card 1.2 website</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Study Cards home">
+      <span class="brand-icon" aria-hidden="true">▣</span>
+      Jommimy's study card 1.2 website
+    </a>
+
+    <div class="topbar-actions">
+      <label class="deck-picker">
+        <span class="sr-only">Choose a deck</span>
+        <select id="deck-select" aria-label="Choose a deck"></select>
+      </label>
+      <button id="admin-toggle" class="button button-secondary" type="button"
+              aria-pressed="false">Admin mode</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <section id="study-panel" aria-label="Study">
+      <div class="mode-tabs" role="tablist" aria-label="Study mode">
+        <button class="mode-tab is-active" type="button" data-mode="flashcards"
+                role="tab" aria-selected="true">Flashcards</button>
+        <button class="mode-tab" type="button" data-mode="quiz"
+                role="tab" aria-selected="false">Quiz</button>
+        <button class="mode-tab" type="button" data-mode="overview"
+                role="tab" aria-selected="false">Quick overview</button>
+      </div>
+
+      <section id="flashcards-view" class="study-view" aria-label="Flashcards">
+        <div class="view-heading">
+          <div>
+            <p class="eyebrow">STANDARD STUDY</p>
+            <h1>Flashcards</h1>
+          </div>
+          <button id="shuffle-button" class="button button-secondary" type="button">
+            Shuffle
+          </button>
+        </div>
+
+        <p id="card-position" class="muted card-position"></p>
+
+        <button id="flashcard" class="flashcard" type="button"
+                aria-label="Show answer">
+          <span id="card-side-label" class="card-side-label">QUESTION</span>
+          <span id="card-content" class="card-content"></span>
+          <span class="flip-hint">Tap or click to flip</span>
+        </button>
+
+        <div class="card-controls">
+          <button id="previous-card" class="button button-secondary" type="button">
+            Previous
+          </button>
+          <button id="flip-card" class="button button-primary" type="button">
+            Show answer
+          </button>
+          <button id="next-card" class="button button-secondary" type="button">
+            Next
+          </button>
+        </div>
+      </section>
+
+      <section id="quiz-view" class="study-view" aria-label="Multiple choice quiz" hidden>
+        <div class="view-heading">
+          <div>
+            <p class="eyebrow">TEST YOURSELF</p>
+            <h1>Multiple choice</h1>
+          </div>
+          <button id="restart-quiz" class="button button-secondary" type="button">
+            Restart quiz
+          </button>
+        </div>
+
+        <p id="quiz-score" class="muted quiz-score"></p>
+        <div class="quiz-card">
+          <p class="eyebrow">QUESTION</p>
+          <h2 id="quiz-question"></h2>
+          <div id="quiz-options" class="quiz-options"></div>
+          <p id="quiz-feedback" class="quiz-feedback" aria-live="polite"></p>
+          <button id="quiz-next" class="button button-primary" type="button" hidden>
+            Next question
+          </button>
+        </div>
+      </section>
+
+      <section id="overview-view" class="study-view" aria-label="Quick overview" hidden>
+        <div class="view-heading">
+          <div>
+            <p class="eyebrow">ALL CARDS AT A GLANCE</p>
+            <h1>Quick overview</h1>
+          </div>
+          <span id="overview-count" class="muted"></span>
+        </div>
+        <div id="overview-list" class="overview-list"></div>
+      </section>
+    </section>
+
+    <section id="admin-panel" class="admin-panel" aria-label="Deck administration" hidden>
+      <div class="view-heading">
+        <div>
+          <p class="eyebrow">MANAGE YOUR CONTENT</p>
+          <h1>Admin mode</h1>
+        </div>
+        <span class="muted">Changes are saved automatically.</span>
+      </div>
+
+      <div class="admin-grid">
+        <section class="admin-box">
+          <h2 id="card-form-title">Add a card</h2>
+          <form id="card-form">
+            <input id="editing-card-id" type="hidden">
+            <label for="question-input">Question</label>
+            <textarea id="question-input" rows="3" required></textarea>
+
+            <label for="answer-input">Answer</label>
+            <textarea id="answer-input" rows="3" required></textarea>
+
+            <div class="form-actions">
+              <button id="save-card-button" class="button button-primary" type="submit">
+                Add card
+              </button>
+              <button id="cancel-edit-button" class="button button-secondary"
+                      type="button" hidden>Cancel edit</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="admin-box">
+          <h2>Bulk import cards</h2>
+          <p class="muted">Enter one card per line in this format: <code>Question | Answer</code></p>
+          <form id="bulk-import-form">
+            <label class="sr-only" for="bulk-import-input">Cards to import</label>
+            <textarea id="bulk-import-input" rows="7"
+                      placeholder="Question one | Answer one&#10;Question two | Answer two"></textarea>
+            <button class="button button-primary" type="submit">Import cards</button>
+          </form>
+        </section>
+
+        <section class="admin-box">
+          <h2>Create a deck</h2>
+          <form id="create-deck-form">
+            <label for="new-deck-name">Deck name</label>
+            <input id="new-deck-name" type="text" required maxlength="80">
+
+            <label for="new-deck-cards">Optional cards</label>
+            <textarea id="new-deck-cards" rows="5"
+                      placeholder="Question | Answer"></textarea>
+
+            <button class="button button-primary" type="submit">Create deck</button>
+          </form>
+        </section>
+
+        <section class="admin-box">
+          <h2>Manage this deck</h2>
+          <p id="admin-deck-summary" class="muted"></p>
+          <div class="form-actions">
+            <button id="delete-deck-button" class="button button-danger" type="button">
+              Delete this deck
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <section class="admin-box card-manager">
+        <div class="view-heading manager-heading">
+          <div>
+            <h2>Cards in this deck</h2>
+            <p class="muted">Select cards to delete several at once.</p>
+          </div>
+          <div class="form-actions">
+            <button id="delete-selected-button" class="button button-danger"
+                    type="button">Delete selected</button>
+            <button id="delete-all-cards-button" class="button button-danger"
+                    type="button">Delete all cards</button>
+          </div>
+        </div>
+        <div id="admin-card-list" class="admin-card-list"></div>
+      </section>
+    </section>
+
+    <footer class="page-footer">
+      <span id="save-status" role="status" aria-live="polite">Saved in this browser</span>
+      <div class="footer-actions">
+        <button id="download-site" class="text-button" type="button">
+          Download website
+        </button>
+        <button id="export-backup" class="text-button" type="button">
+          Download card backup
+        </button>
+        <label class="text-button file-label">
+          Restore card backup
+          <input id="import-backup" type="file" accept="application/json">
+        </label>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
